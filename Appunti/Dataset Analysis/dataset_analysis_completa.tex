@@ -1,0 +1,623 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[most]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\setstretch{1.15}
+
+\title{Progetto Signal, Image and Video}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item Dataset iniziale
+    \begin{itemize}
+        \item Shape, classi e distribuzione (quanti sample per classe, quanti soggetti)
+        \item Verifica valori mancanti sui landmark grezzi
+    \end{itemize}
+    \item Landmark selezionati
+    \begin{itemize}
+        \item Mostra quali landmark usi e perché
+        \item Distribuzione della visibility per landmark critico (spalle, anche) — per giustificare le soglie che usi dopo
+    \end{itemize}
+    \item Midpoint construction
+    \begin{itemize}
+        \item Verifica disponibilità dei midpoint
+        \item Distribuzione delle sorgenti di head\_center
+    \end{itemize}
+    \item Feature engineering
+    \begin{itemize}
+        \item Descrizione breve di cosa misura ogni feature
+        \item Distribuzione di ogni feature per classe
+        \item Valori NaN per feature
+        \item Normalizzazione \textit{(eps, wrap\_angle\_90, angle\_diff\_deg)}
+    \end{itemize} 
+    \item Dataset finale
+    \begin{itemize}
+        \item Shape finale, 8 primary + 1 support
+        \item Distribuzione classi nel dataset pulito
+        \item Split soggetti train/test — no data leakage
+    \end{itemize}
+\end{enumerate}
+
+\newpage
+
+\section{Dataset Analysis}
+\subsection{Dataset Overview}
+\subsubsection{Analisi della struttura del dataset}
+Il dataset utilizzato nel presente progetto è composto da \textbf{4794 campioni e 102 feature}, che rappresentano le coordinate tridimensionali (x, y, z) dei landmark corporei estratti tramite un sistema di pose estimation. Ogni campione corrisponde a un frame contenente la stima dei landmark corporei della parte superiore del corpo ottenuti tramite un sistema di pose estimation. \\[0.5em]
+Il dataset include \textbf{5 classi posturali} relative alla parte superiore del corpo, identificate dalle etichette:
+\begin{enumerate}
+    \item \textbf{TLB (lean backward)}: inclinazione all'indietro
+    \item \textbf{TLF (lean forward)}: inclinazione in avanti
+    \item \textbf{TLL (lean left)}: inclinazione laterale sinistra
+    \item \textbf{TLR (lean right)}: inclinazione laterale destra
+    \item \textbf{TUP (upright posture)}: postura eretta
+\end{enumerate}
+I dati sono stati raccolti da \textbf{13 soggetti} differenti, identificati tramite la variabile subject. La presenza di più soggetti consente di includere nel dataset variabilità inter-individuale legata a differenze morfologiche, proporzioni corporee e modalità personali di mantenere la postura. \\[0.5em]
+Il \textbf{numero di campioni per soggetto} non è uniforme: alcuni soggetti contribuiscono con un numero maggiore di osservazioni (ad esempio il soggetto 1 con 540 campioni), mentre altri presentano un numero inferiore (ad esempio i soggetti 8 e 9 con 270 campioni ciascuno). Questa variabilità è tipica nei dataset acquisiti tramite sessioni di registrazione reali e riflette differenze nella durata delle acquisizioni o nel numero di sequenze registrate per ciascun partecipante. \\[0.5em]
+Nel complesso, la struttura del dataset risulta adeguata per l’analisi delle configurazioni posturali della parte superiore del corpo e per l’estrazione di feature geometriche derivate dai landmark, utili allo sviluppo di un sistema di analisi posturale basato su pose estimation.
+
+\subsubsection{Analisi della distribuzione delle classi}
+L’analisi della distribuzione delle classi posturali è stata effettuata al fine di valutare la presenza di eventuali squilibri nel dataset che potrebbero influenzare le successive fasi di analisi o modellazione. \\[0.5em]
+Il dataset include cinque classi relative alla postura della parte superiore del corpo: TLB, TLF, TLL, TLR e TUP. Il \textbf{numero di campioni} per ciascuna classe è il seguente:
+\begin{itemize}
+    \item TLB: 442 campioni (9.22 \%)
+    \item TLF: 1897 campioni (39.57 \%)
+    \item TLL: 420 campioni (8.76 \%)
+    \item TLR: 420 campioni (8.76 \%)
+    \item TUP: 1615 campioni (33.69 \%)
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/Upper Body Posture Class Distribution.png}
+\end{figure}
+Dall’analisi emerge che il dataset presenta una \textbf{distribuzione non uniforme delle classi}. In particolare, le posture TLF (lean forward) e TUP (upright posture) risultano significativamente più rappresentate rispetto alle altre classi. Complessivamente, queste due classi costituiscono circa il \textbf{73\% dell’intero dataset}. \\[0.5em]
+Per quantificare il grado di squilibrio è stato calcolato l’\textbf{imbalance ratio}, definito come il rapporto tra il numero massimo e minimo di campioni tra le classi. Nel caso in esame tale valore è pari a 4.52, indicando una presenza di \textbf{sbilanciamento moderato tra le classi}. \\[0.5em]
+È stata inoltre analizzata la \textbf{distribuzione delle classi per soggetto}. I risultati mostrano che tutte le classi risultano presenti nei vari soggetti, sebbene con frequenze differenti. In particolare, le posture laterali TLL e TLR mostrano una distribuzione relativamente costante tra i soggetti, mentre le classi TLF e TUP risultano generalmente più frequenti. Questo andamento riflette le caratteristiche del dataset di partenza e rappresenta un aspetto da tenere in considerazione nelle successive fasi di sviluppo del sistema.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/Posture Class Distribution per Subject.png}
+\end{figure}
+\noindent
+Nel complesso, l’analisi evidenzia che il dataset presenta una distribuzione non bilanciata delle classi posturali. Tuttavia, tutte le classi risultano presenti nei diversi soggetti, sebbene con frequenze differenti. Questo indica che, pur in presenza di uno sbilanciamento tra le classi, il dataset mantiene una copertura delle posture nei vari soggetti. Tale aspetto dovrà essere considerato nelle fasi successive, sia nella scelta delle metriche di valutazione sia nell’eventuale adozione di tecniche di bilanciamento, al fine di ridurre possibili bias verso le classi maggiormente rappresentate.
+
+\subsection{Landmark Analysis}
+\subsubsection{Selezione dei landmark rilevanti}
+Per l’analisi posturale sono stati selezionati un sottoinsieme di landmark tra quelli disponibili nel dataset originale, con l’obiettivo di mantenere esclusivamente le informazioni più rilevanti per la descrizione della postura della parte superiore del corpo. In particolare, l’analisi si concentra sulla postura di un utente osservato frontalmente tramite webcam durante una posizione seduta, pertanto l’attenzione è stata rivolta principalmente ai landmark relativi a \textbf{testa, spalle e parte superiore del busto}. \\[0.5em]
+A tal fine sono stati selezionati i landmark corrispondenti a \textbf{naso, occhi, orecchie, spalle e anche}, oltre alle variabili subject e upperbody\_label che identificano rispettivamente il soggetto e la classe posturale associata al campione. Poiché per ogni landmark sono disponibili le coordinate tridimensionali (x, y, z), il sottoinsieme selezionato comprende complessivamente \textbf{29 colonne}. \\[0.5em]
+I landmark selezionati sono stati organizzati in tre gruppi principali:
+\begin{itemize}
+    \item \textbf{Landmark della testa}: nose, left\_eye, right\_eye, left\_ear, right\_ear
+    \item \textbf{Landmark delle spalle}: left\_shoulder, right\_shoulder
+    \item \textbf{Landmark delle anche}: left\_hip, right\_hip
+\end{itemize}
+Nel sottoinsieme selezionato, i landmark relativi a testa e spalle vengono utilizzati come riferimenti principali per l’analisi posturale, in quanto costituiscono i punti più informativi e generalmente più stabili per descrivere la postura della parte superiore del corpo. In particolare, i punti della testa risultano utili per analizzare la posizione e l’orientamento del capo, mentre le spalle rappresentano un riferimento geometrico fondamentale per stimare l’assetto del tronco superiore e l’allineamento posturale. \\
+I landmark delle anche vengono invece utilizzati come informazione di supporto. Sebbene possano contribuire alla descrizione dell’orientamento del busto, essi non rappresentano il riferimento principale dell’analisi, poiché nel contesto applicativo considerato l’inquadratura della webcam tende a includere prevalentemente la metà superiore del corpo. Di conseguenza, le anche possono non essere sempre chiaramente visibili nella scena e le loro coordinate possono risultare meno affidabili oppure essere stimate dal modello di pose estimation. Per questo motivo, tali landmark vengono impiegati come supporto, senza costituire la base principale per la costruzione delle feature posturali. \\[0.5em]
+L’estrazione di questo sottoinsieme di variabili produce un dataset dedicato all’analisi posturale costituito da \textbf{4794 campioni e 29 feature}, mantenendo le informazioni più rilevanti per le successive fasi di elaborazione. Questa selezione consente di ridurre la dimensionalità dei dati rispetto al set completo di landmark disponibili, preservando al contempo le informazioni necessarie per la costruzione delle feature geometriche utilizzate nel sistema di analisi posturale.
+
+\subsubsection{Verifica della qualità e analisi geometrica dei landmark}
+Prima di procedere alla costruzione delle feature geometriche, è stata effettuata una verifica preliminare della qualità e della coerenza geometrica dei landmark selezionati, al fine di assicurare l’affidabilità delle coordinate utilizzate nelle successive fasi di analisi. \\[0.5em]
+In primo luogo è stata verificata la presenza di eventuali \textbf{valori mancanti} all’interno del sottoinsieme di landmark selezionato. I risultati mostrano che non sono presenti missing values, indicando che per tutti i 4794 campioni sono disponibili le coordinate tridimensionali complete dei landmark considerati. \\[0.5em]
+Successivamente è stato analizzato il \textbf{range delle coordinate tridimensionali (x, y, z)} dei landmark selezionati. I valori osservati risultano coerenti e compresi in intervalli plausibili, generalmente compresi tra circa -0.8 e 0.5, senza la presenza di valori anomali o fuori scala. Ciò conferma la consistenza delle coordinate prodotte dal sistema di pose estimation. \\[0.5em]
+Per valutare la \textbf{coerenza geometrica dei landmark}, sono state inoltre analizzate alcune distanze caratteristiche tra punti anatomici simmetrici:
+\begin{itemize}
+    \item distanza tra le spalle (shoulder width)
+    \item distanza tra le orecchie (ear distance)
+    \item distanza tra le anche (hip width)
+\end{itemize}
+Queste misure permettono di verificare la stabilità e la plausibilità geometrica dei landmark nel dataset. \\[0.5em]
+L’analisi statistica delle distanze mostra i seguenti valori medi:
+\begin{itemize}
+    \item \textbf{shoulder width}: media 0.330, deviazione standard 0.0198, intervallo [0.261 – 0.416]
+    \item \textbf{ear distance}: media 0.151, deviazione standard 0.0111, intervallo [0.107 – 0.267]
+    \item \textbf{hip width}: media 0.211, deviazione standard 0.0122, intervallo [0.172 – 0.264]
+\end{itemize}
+La distanza tra le spalle risulta relativamente stabile tra i diversi campioni, con una bassa deviazione standard, confermando che i landmark delle spalle costituiscono un \textbf{riferimento geometrico affidabile} per la descrizione dell’assetto del busto superiore. Anche la distanza tra le orecchie mostra una variabilità contenuta, indicando una \textbf{buona coerenza} dei landmark della testa. La distanza tra le anche presenta valori medi coerenti con la struttura geometrica del corpo umano; tuttavia, nel contesto applicativo considerato tali landmark sono utilizzati principalmente come \textbf{informazione di supporto}, poiché l’inquadratura della webcam può includere prevalentemente la parte superiore del corpo.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/Geometric consistency of selected landmarks.png}
+\end{figure}
+\noindent
+Nel complesso, i risultati indicano che i landmark selezionati presentano una buona qualità e coerenza geometrica, risultando adeguati per la costruzione delle feature geometriche utilizzate nel sistema di analisi posturale.
+
+\subsubsection{Analisi dei landmark derivati}
+Al fine di semplificare la descrizione geometrica della postura e definire riferimenti più stabili per il calcolo delle feature, sono stati introdotti alcuni landmark derivati ottenuti come punto medio tra coppie di landmark simmetrici. Tali punti permettono di ridurre la variabilità associata a singoli landmark e di rappresentare in modo più robusto strutture anatomiche rilevanti per l’analisi posturale. \\
+In particolare, sono stati costruiti i seguenti landmark derivati:
+\begin{itemize}
+    \item \textbf{mid\_shoulder}: punto medio tra la spalla sinistra e la spalla destra \\
+    \[ MS = \left( \frac{LS_x + RS_x}{2},\; \frac{LS_y + RS_y}{2},\; \frac{LS_z + RS_z}{2} \right)\]
+    \textit{LS = left\_shoulder, RS = right\_shoulder}
+    \item \textbf{mid\_hip}: punto medio tra l’anca sinistra e l’anca destra \\
+    \[ MH = \left( \frac{LH_x + RH_x}{2},\; \frac{LH_y + RH_y}{2},\; \frac{LH_z + RH_z}{2} \right)\]
+    \textit{LH = left\_hip, RH = right\_hip}
+    \item \textbf{mid\_ear}: punto medio tra l’orecchio sinistro e l’orecchio destro \\
+    \[ MEA = \left( \frac{LEA_x + REA_x}{2},\; \frac{LEA_y + REA_y}{2},\; \frac{LEA_z + REA_z}{2} \right)\]
+    \textit{LEA = left\_ear, REA = right\_ear}
+    \item \textbf{mid\_eye}: punto medio tra l’occhio sinistro e l’occhio destro \\
+    \[ MEY = \left( \frac{LEY_x + REY_x}{2},\; \frac{LEY_y + REY_y}{2},\; \frac{LEY_z + REY_z}{2} \right)\]
+    \textit{LEY = left\_eye, REY = right\_eye}
+\end{itemize}
+Questi punti rappresentano rispettivamente il \textbf{centro geometrico delle spalle, delle anche e della testa}, e costituiscono riferimenti utili per la costruzione di feature geometriche come angoli posturali e allineamenti tra segmenti corporei. \\[0.5em]
+Inoltre, è stato definito un ulteriore landmark derivato denominato \textbf{HeadCenter}, utilizzato per rappresentare la posizione centrale della testa. Questo punto è stato costruito utilizzando una strategia gerarchica basata sulla disponibilità dei landmark facciali:
+\begin{enumerate}
+    \item mid\_eye (punto medio tra gli occhi)
+    \item mid\_ear (punto medio tra le orecchie)
+    \item nose (punto del naso)
+\end{enumerate}
+Questa scelta è motivata dal fatto che il punto medio tra gli occhi fornisce generalmente una stima più stabile e centrata della posizione della testa, poiché deriva da due landmark simmetrici e meno soggetti a rumore rispetto a un singolo punto. Qualora i landmark degli occhi non siano disponibili, viene utilizzato il punto medio tra le orecchie; in ultima istanza viene utilizzato il punto del naso. \\[0.5em]
+L’analisi dei landmark derivati mostra che \textbf{non sono presenti valori mancanti}, indicando che tutti i punti derivati risultano disponibili per l’intero dataset \\[0.5em]
+Le statistiche descrittive dei principali landmark derivati evidenziano valori coerenti con la struttura geometrica del corpo umano. Ad esempio, per il punto mid\_shoulder si osservano valori medi pari a circa 0.0209 sull’asse x, -0.3819 sull’asse y e -0.0699 sull’asse z, con deviazioni standard relativamente contenute (circa 0.10, 0.07 e 0.13 rispettivamente). Analogamente, il punto mid\_hip presenta una variabilità molto ridotta, con deviazioni standard inferiori a 0.001–0.002, indicando una posizione particolarmente stabile all’interno del sistema di coordinate. \\[0.5em]
+Per quanto riguarda il landmark \textbf{HeadCenter}, l’analisi della sorgente utilizzata per la sua costruzione mostra che nel 100\% dei casi (4794 frame) è stato possibile utilizzare il punto mid\_eye, senza ricorrere ai fallback basati su orecchie o naso. Inoltre, non sono presenti frame con valori mancanti per HeadCenter, confermando la buona qualità dei landmark facciali nel dataset. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/HeadCenter source distribution.png}
+\end{figure}
+\noindent
+Nel complesso, l’analisi evidenzia che i landmark derivati risultano completi, \textbf{geometricamente coerenti e sufficientemente stabili}, rendendoli adatti a essere utilizzati come riferimenti per la costruzione delle feature geometriche impiegate nel sistema di analisi posturale.
+
+\subsection{Feature Engineering}
+\subsubsection{Criteri di progettazione delle feature}
+La progettazione delle feature è stata guidata dall’obiettivo di descrivere in modo efficace la postura della parte superiore del corpo a partire dai landmark estratti tramite pose estimation. Poiché il sistema è pensato per analizzare un utente osservato frontalmente tramite webcam in posizione seduta, l’attenzione è stata concentrata principalmente su testa, spalle e tronco superiore, che rappresentano le componenti più rilevanti per il task considerato. \\
+Nella definizione delle feature si è scelto di privilegiare misure geometriche interpretabili, come angoli, offset relativi e relazioni tra landmark, in modo da ottenere grandezze direttamente collegate a configurazioni posturali significative. È stata inoltre introdotta una distinzione tra feature principali, basate su testa e spalle, e feature di supporto, che includono anche le anche come riferimento anatomico complementare. Infine, le feature basate su distanze e profondità relative sono state normalizzate rispetto alla distanza tra le spalle, utilizzata come riferimento di scala, mentre gli angoli sono stati mantenuti in gradi.
+
+\subsubsection{Riferimenti geometrici e normalizzazione}
+Per la costruzione delle feature sono stati definiti alcuni riferimenti geometrici derivati a partire dai landmark originali, al fine di ottenere punti di riferimento più stabili per la descrizione della postura. In particolare, sono stati utilizzati il punto medio tra le spalle (mid\_shoulder) e il punto medio tra le anche (mid\_hip), calcolati come media delle coordinate dei landmark sinistro e destro. Questi punti rappresentano rispettivamente il centro geometrico delle spalle e del bacino e vengono utilizzati per descrivere l’orientamento del busto e le relazioni tra i segmenti corporei. \\[0.5em]
+Per rappresentare la posizione della testa è stato introdotto il landmark derivato HeadCenter, calcolato utilizzando una strategia gerarchica basata sulla disponibilità dei landmark facciali. In particolare, il punto viene stimato come punto medio tra gli occhi (mid\_eye); qualora i landmark degli occhi non siano disponibili, viene utilizzato il punto medio tra le orecchie (mid\_ear), mentre il punto del naso (nose) viene utilizzato come ultima alternativa. Questa strategia consente di ottenere una stima più robusta della posizione centrale della testa anche in presenza di landmark mancanti o meno affidabili. \\[0.5em]
+Le feature basate su \textbf{distanze, offset e profondità relative} sono state normalizzate rispetto alla distanza tra le spalle (shoulder\_width), calcolata nel piano immagine tra i landmark delle spalle sinistra e destra. L’utilizzo della distanza tra le spalle come riferimento di scala permette di ridurre la dipendenza delle feature dalle dimensioni del soggetto e dalla distanza dalla webcam, rendendo le misure più confrontabili tra campioni diversi. Gli angoli, invece, sono stati mantenuti in gradi, in quanto già invarianti rispetto alla scala. \\[0.5em]
+Dal punto di vista numerico, alcune operazioni includono un piccolo \textbf{termine di stabilizzazione} $\varepsilon $ nelle divisioni per evitare instabilità numeriche o divisioni per valori molto piccoli. Inoltre, per alcune feature angolari sono state utilizzate funzioni di normalizzazione degli angoli, come il \textbf{wrapping nell’intervallo} [-90°, 90°] e il calcolo della \textbf{differenza angolare normalizzata}, al fine di mantenere valori coerenti e facilmente interpretabili.
+
+\subsubsection{Primary Features}
+Le feature principali sono state progettate utilizzando esclusivamente i landmark relativi a testa e spalle, che rappresentano i punti più affidabili nella configurazione di acquisizione considerata. Queste feature costituiscono il nucleo principale della rappresentazione posturale, in quanto consentono di descrivere l’orientamento del capo, la simmetria delle spalle e la configurazione del tronco superiore senza dipendere dai landmark delle anche.
+\subsubsection*{Feature relative alle spalle}
+\begin{itemize}
+    \item \textbf{shoulder\_slope} \\
+    Misura l’inclinazione della linea che unisce la spalla sinistra e la spalla destra nel piano immagine. Viene calcolata come l’angolo della retta tra i due landmark delle spalle tramite la funzione $\arctan 2(dy, dx)$, ed è utile per descrivere eventuali asimmetrie laterali del cingolo scapolare.
+    \[ dx = RS_x - LS_x \qquad dy = RS_y - LS_y \]
+    \[ \theta_{shoulder} = \arctan 2(dy,dx) \]
+    \item \textbf{shoulder\_width} \\
+    Misura la distanza tra le due spalle nel piano immagine. Viene calcolata come distanza euclidea 2D tra left\_shoulder e right\_shoulder e viene utilizzata anche come riferimento di scala per la normalizzazione delle altre feature basate su offset e profondità relative.
+    \[ shoulder\_width = \sqrt{(RS_x - LS_x)^2 + (RS_y - LS_y)^2}\]
+\end{itemize}
+\subsubsection*{Feature relative alla testa}
+\begin{itemize}
+    \item \textbf{head\_tilt} \\
+    Misura l’inclinazione laterale della testa. Viene calcolata come angolo della retta che unisce i due occhi; in assenza di questi landmark viene utilizzata come fallback la retta tra le due orecchie. Il valore viene riportato nell’intervallo [-90°, 90°] per mantenere una rappresentazione angolare coerente e interpretabile.
+    \[ dx = REY_x - LEY_x \qquad dy = REY_y - LEY_y \]
+    \[ \theta_{head\_tilt} = \arctan 2(dy,dx)\]
+    \item \textbf{head\_offset\_x} \\
+    Misura lo spostamento laterale della testa rispetto al centro delle spalle. Viene calcolata come differenza tra la coordinata x di head\_center e quella di mid\_shoulder, normalizzata rispetto a shoulder\_width. Questa feature descrive eventuali deviazioni laterali del capo rispetto all’asse del busto superiore.
+    \[ head\_offset\_x = \frac{HC_x - MS_x}{shoulder\_width}\]
+    \item \textbf{head\_forward\_distance} \\
+    Misura lo spostamento in profondità della testa rispetto alle spalle. Viene calcolata come differenza tra la coordinata z di head\_center e quella di mid\_shoulder, normalizzata rispetto a shoulder\_width. Questa feature è utile per descrivere configurazioni compatibili con forward head posture.
+    \[ head\_forward\_distance = \frac{HC_z - MS_z}{shoulder\_width} \]
+    \item \textbf{head\_neck\_vertical\_angle} \\
+    Misura l’angolo tra il vettore che unisce mid\_shoulder a head\_center e la verticale dell’immagine. Viene calcolata a partire dal vettore testa–spalle e consente di descrivere l’inclinazione complessiva del segmento testa-collo rispetto alla direzione verticale.
+    \[ \vec{H} = HC - MS \qquad \vec{v} = (0, -1, 0)\]
+    \[ \theta_{head\_neck\_vertical} = \arccos \left( \frac{\vec{v} \cdot \vec{H}}{\parallel \vec{v} \parallel \parallel \vec{H} \parallel} \right)\]
+\end{itemize}
+\subsubsection*{Feature di relazione testa–spalle}
+\begin{itemize}
+    \item \textbf{head\_shoulder\_alignment} \\
+    Misura il disallineamento angolare tra inclinazione della testa e inclinazione delle spalle. Viene calcolata come differenza angolare normalizzata tra head\_tilt e shoulder\_slope. Questa feature descrive eventuali compensazioni o disallineamenti tra capo e cingolo scapolare.
+    \[ head\_shoulder\_alignment = \theta_{head\_tilt} - \theta_{shoulder}\]
+\end{itemize}
+\subsubsection*{Feature relative al tronco superiore}
+\begin{itemize}
+    \item \textbf{trunk\_upper\_lateral\_angle} \\
+    Misura l’inclinazione laterale del segmento superiore del corpo, descritto dal vettore che unisce mid\_shoulder a head\_center. Viene calcolata come angolo nel piano x–y tramite $\arctan 2(dx, dy)$. Questa feature è utile per rilevare posture inclinate lateralmente.
+    \[ dx = HC_x - MS_x \qquad dy = MS_y - HC_y \]
+    \[ \theta_{trunk\_upper\_lat} = \arctan 2 (dx, dy) \]
+    \item \textbf{trunk\_upper\_forward\_backward\_angle} \\
+    Misura l’inclinazione in avanti o all’indietro del segmento superiore del corpo. Viene calcolata utilizzando la componente di profondità z del vettore tra mid\_shoulder e head\_center, in relazione alla componente verticale y. Questa feature consente di descrivere la componente antero-posteriore del busto superiore.
+    \[ dz = HC_z - MS_z \qquad dy = MS_y - HC_y \]
+    \[ \theta_{trunk\_upper\_fb} = \arctan 2 (dz, dy)\]
+\end{itemize}
+Nel complesso, le feature principali sono state definite in modo da fornire una rappresentazione compatta ma informativa della postura della parte superiore del corpo, privilegiando misure robuste, interpretabili e direttamente collegate alle configurazioni posturali di interesse.
+
+\subsubsection{Support features}
+Le feature di supporto sono state definite includendo anche i landmark delle anche, con l’obiettivo di descrivere il tronco completo e ottenere una rappresentazione più estesa dell’assetto posturale. Queste feature non costituiscono il nucleo principale del sistema, poiché i landmark delle anche possono risultare meno affidabili nella configurazione di acquisizione considerata; tuttavia, esse forniscono informazioni aggiuntive utili per caratterizzare l’orientamento anatomico del busto.
+\subsubsection*{Feature di relazione collo-tronco}
+\begin{itemize}
+    \item \textbf{neck\_trunk\_angle\_anatomical} \\
+    Misura l’angolo anatomico tra il vettore del tronco, definito dal segmento che unisce mid\_hip a mid\_shoulder, e il vettore testa-collo, definito dal segmento che unisce mid\_shoulder a head\_center. Viene calcolata tramite il prodotto scalare tra i due vettori e consente di descrivere il rapporto geometrico tra testa, collo e tronco.
+    \[ \vec{H}_{ear} = HC - MS \qquad \vec{T} = MS - MH\]
+    \[ \theta_{neck\_trunk\_ear} = \arccos \left( \frac{\vec{T} \cdot \vec{H}_{ear}}{\parallel \vec{T} \parallel \parallel \vec{H}_{ear} \parallel} \right)\]
+\end{itemize}
+\subsubsection*{Feature relative al tronco completo}
+\begin{itemize}
+    \item \textbf{trunk\_lateral\_angle} \\
+    Misura l’inclinazione laterale del tronco completo utilizzando il vettore che unisce mid\_hip a mid\_shoulder. Viene calcolata come angolo nel piano x–y tramite $\arctan 2(dx, dy)$ ed è utile per descrivere deviazioni laterali dell’intero busto.
+    \[ dx = MS_x - MH_x \qquad dy = MH_y - MS_y\]
+    \[ \theta_{trunk\_lat} = \arctan 2(dx, dy)\]
+    \item \textbf{trunk\_forward\_backward\_angle} \\
+    Misura l’inclinazione antero-posteriore del tronco completo. Viene calcolata considerando la differenza lungo l’asse z tra mid\_shoulder e mid\_hip in relazione alla componente verticale y del vettore del tronco. Questa feature consente di descrivere la flessione in avanti o l’estensione all’indietro del busto.
+    \[ dz = MS_z - MH_z \qquad dy = MH_y - MS_y\]
+    \[ \theta_{trunk\_fb} = \arctan 2(dz, dy) \]
+    \item \textbf{trunk\_depth} \\
+    Misura la differenza di profondità tra spalle e anche. Viene calcolata come differenza tra le coordinate z di mid\_shoulder e mid\_hip, normalizzata rispetto a shoulder\_width. Questa feature fornisce un’indicazione sintetica della configurazione del tronco lungo la direzione di profondità.
+    \[ trunk\_depth = MS_z - MH_z \]
+\end{itemize}
+Nel complesso, le feature di supporto permettono di arricchire la descrizione posturale introducendo informazioni sul tronco completo. Sebbene dipendano da landmark potenzialmente meno affidabili rispetto a testa e spalle, esse risultano utili come misure complementari nelle situazioni in cui i punti delle anche sono disponibili e sufficientemente coerenti.
+
+\subsection{Feature Analysis}
+\subsubsection{Analisi descrittiva delle feature}
+L’analisi descrittiva delle feature è stata effettuata per verificare che le variabili geometriche estratte dai landmark siano coerenti con il problema di analisi posturale considerato e facilmente interpretabili dal punto di vista geometrico. Il dataset finale contiene 4794 campioni e 13 feature, costruite a partire da testa, spalle e tronco, con l’obiettivo di descrivere l’orientamento del capo, l’allineamento tra testa e spalle e la configurazione del busto. Le misure di distanza e profondità sono state normalizzate rispetto alla shoulder width, mentre gli angoli sono espressi in gradi. \\[0.5em]
+\textbf{Interpretazione delle feature}:
+\subsection*{head\_tilt}
+
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & testa quasi dritta, poco inclinata lateralmente \\
+\hline
+\textbf{Valori positivi} & inclinazione laterale della testa in un verso \\
+\hline
+\textbf{Valori negativi} & inclinazione laterale della testa nel verso opposto \\
+\hline
+\end{tabular}
+
+\subsection*{head\_offset\_x}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & testa centrata rispetto al centro delle spalle \\
+\hline
+\textbf{Valori positivi} & testa spostata lateralmente da un lato rispetto alle spalle \\
+\hline
+\textbf{Valori negativi} & testa spostata lateralmente dall'altro lato \\
+\hline
+\end{tabular}
+
+\subsection*{head\_forward\_distance}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & testa a profondità simile rispetto alle spalle \\
+\hline
+\textbf{Valori positivi} & testa più avanti o più indietro rispetto alle spalle, a seconda della convenzione dell'asse z \\
+\hline
+\textbf{Valori negativi} & testa spostata nella direzione opposta lungo la profondità; nel vostro dataset valori più negativi sono associati a posture più in avanti \\
+\hline
+\end{tabular}
+
+\subsection*{head\_neck\_vertical\_angle}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & testa-collo più allineati alla verticale \\
+\hline
+\textbf{Valori positivi} & angolo maggiore: testa meno verticale, quindi più inclinata rispetto all'asse verticale \\
+\hline
+\textbf{Valori negativi} & non è una feature con segno: l'angolo è interpretato soprattutto come ampiezza \\
+\hline
+\end{tabular}
+
+\subsection*{shoulder\_slope}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & spalle quasi orizzontali \\
+\hline
+\textbf{Valori positivi} & linea delle spalle inclinata in un verso \\
+\hline
+\textbf{Valori negativi} & linea delle spalle inclinata nel verso opposto \\
+\hline
+\end{tabular}
+
+\subsection*{shoulder\_width}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & distanza tra spalle nella norma \\
+\hline
+\textbf{Valori positivi} & spalle più distanti / maggiore apertura apparente \\
+\hline
+\textbf{Valori negativi} & non si interpreta col segno, perché è una distanza \\
+\hline
+\end{tabular}
+
+\subsection*{head\_shoulder\_alignment}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & testa e spalle ben allineate tra loro \\
+\hline
+\textbf{Valori positivi} & disallineamento angolare tra testa e spalle in un verso \\
+\hline
+\textbf{Valori negativi} & disallineamento angolare nel verso opposto \\
+\hline
+\end{tabular}
+
+\subsection*{trunk\_upper\_lateral\_angle}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & tronco superiore quasi verticale, senza inclinazione laterale marcata \\
+\hline
+\textbf{Valori positivi} & inclinazione laterale del busto superiore in un verso \\
+\hline
+\textbf{Valori negativi} & inclinazione laterale nel verso opposto \\
+\hline
+\end{tabular}
+
+\subsection*{trunk\_upper\_forward\_backward\_angle}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & tronco superiore quasi verticale sul piano antero-posteriore \\
+\hline
+\textbf{Valori positivi} & inclinazione del tronco superiore in una direzione antero-posteriore \\
+\hline
+\textbf{Valori negativi} & inclinazione nella direzione opposta; nel vostro dataset valori più negativi compaiono nelle posture più in avanti \\
+\hline
+\end{tabular}
+
+\subsection*{neck\_trunk\_angle\_anatomical}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & rapporto più “chiuso” tra testa-collo e tronco \\
+\hline
+\textbf{Valori positivi} & angolo maggiore: capo e tronco meno allineati / più aperti tra loro \\
+\hline
+\textbf{Valori negativi} & non è una feature con segno: conta soprattutto quanto l’angolo aumenta o diminuisce \\
+\hline
+\end{tabular}
+
+\subsection*{trunk\_lateral\_angle}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & tronco complessivamente dritto sul piano laterale \\
+\hline
+\textbf{Valori positivi} & inclinazione laterale del tronco in un verso \\
+\hline
+\textbf{Valori negativi} & inclinazione laterale nel verso opposto \\
+\hline
+\end{tabular}
+
+\subsection*{trunk\_forward\_backward\_angle}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & tronco quasi neutro sul piano antero-posteriore \\
+\hline
+\textbf{Valori positivi} & inclinazione in una direzione antero-posteriore; nel vostro dataset i valori positivi sono associati più spesso a posture backward \\
+\hline
+\textbf{Valori negativi} & inclinazione nella direzione opposta; nel vostro dataset i valori negativi sono associati più spesso a posture forward \\
+\hline
+\end{tabular}
+
+\subsection*{trunk\_depth}
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Valori vicini a 0} & profondità di spalle e anche simile \\
+\hline
+\textbf{Valori positivi} & maggiore differenza di profondità in un verso tra spalle e anche \\
+\hline
+\textbf{Valori negativi} & differenza di profondità nel verso opposto; nel vostro dataset valori negativi compaiono più spesso nelle posture in avanti \\
+\hline
+\end{tabular}
+\\[1em]
+\noindent
+Dalle statistiche descrittive emerge che le feature presentano valori coerenti con configurazioni posturali realistiche. In particolare:
+\begin{itemize}
+    \item \textbf{shoulder\_width} risulta una delle feature più stabili, con media pari a circa 0.326 e deviazione standard di circa 0.019, confermando che la distanza tra le spalle costituisce un buon riferimento di scala.
+    \item \textbf{head\_offset\_x} ha media prossima a 0 (circa -0.031), indicando che nel complesso la testa risulta mediamente centrata rispetto alle spalle.
+    \item Le feature angolari della testa e del collo, come \textbf{head\_tilt} e \textbf{head\_neck\_vertical\_angle}, mostrano una variabilità moderata, segno che il dataset include configurazioni differenti del capo ma senza valori incoerenti.
+    \item Le feature del tronco, in particolare \textbf{trunk\_upper\_lateral\_angle}, \textbf{trunk\_forward\_backward\_angle} e \textbf{shoulder\_slope}, presentano una dispersione maggiore, coerente con la presenza di posture inclinate lateralmente o in avanti/all’indietro.
+\end{itemize}
+Feature Histograms mostra la distribuzione di ciascuna feature sull’intero dataset. In generale, la maggior parte delle variabili presenta una distribuzione concentrata attorno a valori centrali, segno che esiste una configurazione posturale più frequente nel dataset. Alcune feature, soprattutto quelle relative al tronco e all’allineamento testa–spalle, mostrano invece distribuzioni più larghe, indicando una maggiore variabilità posturale.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Feature Histograms.png}
+\end{figure}
+\noindent
+Overview of Feature Distributions riassume invece la dispersione delle feature tramite boxplot. Questo grafico permette di osservare in modo immediato:
+\begin{itemize}
+    \item la scala dei valori di ogni feature
+    \item la variabilità delle diverse misure
+    \item la presenza di outlier, cioè osservazioni più estreme
+\end{itemize}
+Gli outlier sono particolarmente visibili in feature come shoulder\_slope, trunk\_upper\_lateral\_angle e head\_shoulder\_alignment. Nel contesto di questo progetto, tali valori non devono essere interpretati necessariamente come errori, ma come configurazioni posturali più accentuate, ad esempio inclinazioni laterali marcate o posture non allineate.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Overview of Feature Distributions.png}
+\end{figure}
+\noindent
+Nel complesso, l’analisi descrittiva mostra che le feature estratte sono coerenti dal punto di vista geometrico, interpretabili rispetto alla postura e sufficientemente variabili da descrivere configurazioni differenti di testa, spalle e tronco. Questi risultati confermano che il set di feature costruito è adeguato per le successive analisi rispetto alle classi posturali e per la valutazione del sistema di monitoraggio della postura.
+
+\subsubsection{Distribuzione delle feautre rispetto alle classi posturali}
+Per valutare quanto le feature siano utili nel distinguere le diverse configurazioni posturali, è stata analizzata la loro distribuzione rispetto alle cinque classi del dataset: \textbf{TLB (lean backward), TLF (lean forward), TLL (lean left), TLR (lean right) e TUP (upright posture)}. \\[0.5em]
+Feature Distribution by Posture Class mostra la distribuzione delle feature tramite boxplot per ciascuna classe. Questo tipo di grafico permette di osservare come cambiano i valori delle variabili nelle diverse posture e quanto le distribuzioni si sovrappongono tra loro.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Feature Distribution by Posture Class.png}
+\end{figure}
+\noindent
+Dai grafici emerge che alcune feature distinguono chiaramente le posture laterali. In particolare, head\_tilt assume valori medi molto più elevati nella classe TLL (circa 21.6°) rispetto alle altre classi, indicando una maggiore inclinazione laterale della testa. Al contrario, nella classe TLR la feature assume valori medi negativi (circa -2.2°), riflettendo un’inclinazione nel verso opposto. Un comportamento simile si osserva anche per head\_offset\_x e trunk\_lateral\_angle, che cambiano segno tra le posture inclinate a sinistra e a destra. Ad esempio, trunk\_lateral\_angle presenta un valore medio di circa 36.7° nella classe TLL e -31.2° nella classe TLR, distinguendo chiaramente le inclinazioni laterali del tronco. \\[0.5em]
+Le feature legate all’inclinazione antero-posteriore risultano invece utili per distinguere posture in avanti e all’indietro. In particolare, trunk\_forward\_backward\_angle assume valori medi positivi nella classe TLB (circa 17.1°), coerentemente con una postura inclinata all’indietro, mentre assume valori negativi nella classe TLF (circa -28.1°), indicando una flessione in avanti del busto. Anche head\_forward\_distance e trunk\_depth mostrano variazioni tra queste classi, riflettendo la diversa posizione della testa e del tronco lungo l’asse di profondità. \\[0.5em]
+Mean Feature Values per Posture Class riassume queste differenze tramite una heatmap delle medie delle feature per ciascuna classe posturale. Il grafico evidenzia in modo immediato quali variabili cambiano maggiormente tra le posture. In particolare, le feature che descrivono l’inclinazione laterale (head\_tilt, head\_offset\_x, trunk\_lateral\_angle) e quelle che descrivono l’inclinazione antero-posteriore (trunk\_forward\_backward\_angle, head\_forward\_distance) mostrano le variazioni più marcate tra le classi. \\[0.5em]
+Al contrario, alcune feature come shoulder\_width presentano valori molto simili per tutte le posture, confermando che rappresentano principalmente una misura geometrica di riferimento piuttosto che un indicatore diretto della postura.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Mean Feature Values per Posture Class.png}
+\end{figure}
+\noindent
+Nel complesso, l’analisi mostra che le feature progettate riescono a catturare efficacemente le principali variazioni dell’assetto posturale della testa, delle spalle e del tronco, risultando quindi adeguate per distinguere le diverse configurazioni posturali presenti nel dataset.
+
+\subsubsection{Analisi di correlazione tra feature}
+Per verificare se alcune feature descrivono informazioni simili tra loro, è stata analizzata la correlazione lineare tra le variabili tramite la matrice di correlazione di Pearson. Triangular Correlation Heatmap riporta i coefficienti di correlazione tra tutte le coppie di feature: i valori vicini a 1 indicano una forte correlazione positiva, quelli vicini a -1 una forte correlazione negativa, mentre valori vicini a 0 indicano una relazione debole o assente.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Triangular Feature Correlation Matrix.png}
+\end{figure}
+\noindent
+Nel complesso, la matrice evidenzia che molte feature presentano correlazioni basse o moderate, suggerendo che il set costruito descrive aspetti diversi della postura e non risulta eccessivamente ridondante. Questo è particolarmente importante, poiché le feature principali sono state progettate per descrivere testa e spalle, mentre le feature di supporto servono ad arricchire la rappresentazione introducendo informazioni sul tronco completo. \\[0.5em]
+Per quanto riguarda le feature principali, si osservano in genere correlazioni moderate: ad esempio head\_tilt e head\_offset\_x mostrano una correlazione pari a 0.377, mentre head\_offset\_x e trunk\_upper\_lateral\_angle hanno correlazione 0.539. Questi valori indicano che le feature principali legate alla testa e al busto superiore sono collegate tra loro, ma non in modo tale da risultare equivalenti; ciascuna mantiene quindi una propria utilità descrittiva. \\[0.5em]
+Le correlazioni più forti emergono invece soprattutto tra alcune feature di supporto e tra feature principali e di supporto che descrivono lo stesso tipo di movimento posturale. In particolare, head\_neck\_vertical\_angle e trunk\_upper\_forward\_backward\_angle mostrano una correlazione quasi perfetta e negativa (-0.999): questo significa che entrambe catturano in modo molto simile l’inclinazione antero-posteriore della parte superiore del corpo, ma con convenzioni di segno opposte. Inoltre, tra le feature di supporto si osserva una correlazione molto elevata tra trunk\_forward\_backward\_angle e trunk\_depth (0.982), indicando che l’inclinazione del tronco lungo l’asse antero-posteriore è strettamente legata alla differenza di profondità tra spalle e anche. Anche neck\_trunk\_angle\_anatomical risulta fortemente correlata con queste due feature (0.828 con trunk\_forward\_backward\_angle e 0.848 con trunk\_depth), confermando che tutte e tre contribuiscono a descrivere la configurazione globale del busto. \\[0.5em]
+Dal punto di vista interpretativo, questi risultati mostrano che le feature principali sono sufficienti per rappresentare in modo efficace la postura di testa e spalle, mentre le feature di supporto aggiungono una descrizione più completa del tronco. Sebbene alcune di esse risultino correlate tra loro, esse non sono inutili: al contrario, rafforzano la rappresentazione di aspetti posturali che non possono essere descritti pienamente dalle sole feature principali, soprattutto per quanto riguarda la flessione in avanti/all’indietro e l’assetto complessivo del busto. \\[0.5em]
+Nel complesso, l’analisi della correlazione conferma che il set di feature costruito è coerente con la struttura del problema: le feature principali forniscono il nucleo essenziale per la descrizione della postura, mentre le feature di supporto introducono informazioni aggiuntive sul tronco che rendono la rappresentazione posturale più completa.
+
+\subsubsection{Interpretazione delle feature per la valutazione posturale}
+Per comprendere il contributo delle diverse feature nella valutazione della postura, sono state analizzate le medie delle feature per ciascuna classe posturale e la variazione dei valori tra le classi. Questo permette di capire quali variabili cambiano maggiormente tra posture diverse e risultano quindi più informative per la valutazione posturale. \\[0.5em]
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Standardized Mean Feature Values per Posture Class.png}
+\end{figure}
+\noindent
+La standardizzazione consente di confrontare feature con scale diverse: valori positivi (rosso) indicano che una feature è più alta della media nelle posture considerate, mentre valori negativi (blu) indicano valori inferiori alla media.
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{../../Grafici/Variation of Each Feature Across Posture Classes.png}
+\end{figure}
+\noindent
+Dall’analisi emerge che alcune feature presentano differenze marcate tra le classi posturali. In particolare, shoulder\_slope e head\_shoulder\_alignment mostrano le variazioni più elevate tra le posture, come evidenziato anche in Variation of Each Feature Across Posture Classes, che rappresenta il range di variazione delle feature tra le classi. Questo indica che l’inclinazione delle spalle e l’allineamento tra testa e spalle sono tra gli indicatori più rilevanti per distinguere configurazioni posturali differenti. \\[0.5em]
+Anche alcune feature del tronco contribuiscono significativamente alla descrizione della postura. Tra queste, trunk\_lateral\_angle, trunk\_upper\_lateral\_angle e trunk\_forward\_backward\_angle mostrano variazioni importanti tra le classi, indicando che l’inclinazione laterale e antero-posteriore del busto è un elemento discriminante tra le diverse configurazioni posturali. \\[0.5em]
+Dal punto di vista della struttura del modello, è possibile distinguere tra feature principali, basate sui landmark di testa e spalle, e feature di supporto, che includono anche informazioni sul tronco e sulle anche. I risultati mostrano che molte delle feature principali (ad esempio shoulder\_slope, head\_shoulder\_alignment e head\_tilt) presentano variazioni elevate tra le classi, confermando che testa e spalle rappresentano un nucleo informativo sufficiente per descrivere gran parte delle variazioni posturali. \\
+Le feature di supporto, come trunk\_lateral\_angle, trunk\_forward\_backward\_angle e \\ neck\_trunk\_angle\_anatomical, contribuiscono invece ad arricchire la descrizione del busto, fornendo informazioni aggiuntive sull’assetto globale del tronco nello spazio. Sebbene alcune di queste variabili risultino correlate tra loro, esse permettono di catturare meglio movimenti complessi del tronco che non possono essere descritti completamente dalle sole feature principali. \\[0.5em]
+Nel complesso, l’interpretazione delle feature evidenzia che le feature principali forniscono una rappresentazione efficace dell’allineamento testa-spalle, mentre le feature di supporto introducono una descrizione più completa della configurazione del tronco, migliorando la capacità del sistema di analizzare posture diverse in modo più dettagliato.
+
+\subsection{Final Dataset Costruction}
+\subsubsection{Dataset transformation pipeline}
+La costruzione del dataset finale avviene attraverso una pipeline di trasformazione dei dati che parte dalle coordinate dei landmark corporei estratti tramite pose estimation e termina con un set compatto di feature geometriche utilizzate per l’analisi posturale. \\[0.5em]
+La pipeline di trasformazione dei dati è articolata nelle seguenti fasi principali:
+\begin{enumerate}
+    \item \textbf{Landmark selection} \\
+    Dal dataset originale viene selezionato un sottoinsieme di landmark rilevanti per l’analisi della postura della parte superiore del corpo. In particolare vengono mantenuti i landmark relativi a testa, spalle e anche, insieme alle variabili di identificazione del soggetto e della classe posturale.
+    \item \textbf{Landmark derivation} \\
+    Per ottenere riferimenti geometrici più stabili vengono calcolati alcuni landmark derivati, come il punto medio tra le spalle (mid\_shoulder), il punto medio tra le anche (mid\_hip) e il centro della testa (HeadCenter). Questi punti permettono di rappresentare in modo più robusto le principali strutture anatomiche coinvolte nell’analisi posturale.
+    \item \textbf{Geometric feature extraction} \\
+    A partire dai landmark selezionati e derivati vengono calcolate diverse feature geometriche che descrivono l’orientamento della testa, l’allineamento delle spalle e la configurazione del tronco. Le feature includono principalmente:
+    \begin{itemize}
+        \item angoli posturali
+        \item offset relativi tra segmenti corporei
+        \item differenze di profondità lungo l’asse z
+    \end{itemize}
+    Le feature sono progettate per essere interpretabili dal punto di vista biomeccanico e direttamente correlate a configurazioni posturali significative.
+    \item \textbf{Feature normalization} \\
+    Le feature basate su distanze e profondità relative vengono normalizzate rispetto alla shoulder width, utilizzata come riferimento di scala. Questa scelta consente di ridurre la dipendenza delle misure dalle dimensioni del soggetto e dalla distanza dalla webcam.
+    \item \textbf{Final feature dataset construction} \\
+    Al termine della pipeline viene ottenuto un dataset finale composto da 13 feature geometriche, insieme alle variabili subject e upperbody\_label. Questo dataset rappresenta una descrizione compatta e interpretabile della postura della parte superiore del corpo ed è utilizzato per le successive fasi di analisi delle feature.
+\end{enumerate}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.9cm,
+    >={Stealth},
+    every node/.style={font=\small},
+    base/.style={
+        rectangle,
+        rounded corners=8pt,
+        draw=black,
+        very thick,
+        minimum width=7.2cm,
+        minimum height=1.1cm,
+        align=center,
+        inner sep=6pt
+    },
+    process/.style={
+        base,
+        fill=gray!10
+    },
+    dataset/.style={
+        base,
+        fill=blue!10
+    },
+    arrow/.style={
+        ->,
+        very thick
+    }
+]
+\node[dataset] (raw) {%
+    \textbf{Raw landmark dataset}\\
+    \emph{102 variables}
+};
+\node[process, below=of raw] (selection) {%
+    \textbf{Landmark selection}
+};
+\node[process, below=of selection] (derived) {%
+    \textbf{Derived landmarks}
+};
+\node[process, below=of derived] (features) {%
+    \textbf{Geometric feature extraction}
+};
+\node[process, below=of features] (norm) {%
+    \textbf{Normalization}
+};
+\node[dataset, below=of norm] (final) {%
+    \textbf{Final feature dataset}\\
+    \emph{13 features}
+};
+\draw[arrow] (raw) -- (selection);
+\draw[arrow] (selection) -- (derived);
+\draw[arrow] (derived) -- (features);
+\draw[arrow] (features) -- (norm);
+\draw[arrow] (norm) -- (final);
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Final dataset structure}
+Al termine della pipeline di trasformazione dei dati è stato ottenuto un dataset finale progettato per rappresentare in modo compatto la postura della parte superiore del corpo attraverso feature geometriche interpretabili. \\[0.5em]
+Il dataset finale è composto da \textbf{4794 campioni} e \textbf{15 colonne} complessive, di cui \textbf{13 feature geometriche} utilizzate per descrivere la configurazione posturale, oltre alle variabili subject e upperbody\_label. La variabile subject identifica il soggetto da cui proviene il campione, mentre upperbody\_label rappresenta la classe posturale associata al frame. \\[0.5em]
+Le feature presenti nel dataset descrivono diversi aspetti della postura della parte superiore del corpo, includendo l’orientamento della testa, l’allineamento tra testa e spalle e l’inclinazione del tronco sia nel piano laterale sia lungo l’asse antero-posteriore. Le variabili sono state costruite a partire dai landmark della testa, delle spalle e delle anche, utilizzando relazioni geometriche tra i punti anatomici.
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Componente} & \textbf{Descrizione} & \textbf{Numero} \\
+\midrule
+Campioni & Frame del dataset posturale & 4794 \\
+Soggetti & Partecipanti presenti nel dataset & 13 \\
+Classi posturali & TLB, TLF, TLL, TLR, TUP & 5 \\
+Feature geometriche & Variabili descrittive della postura & 13 \\
+Colonne totali & subject + label + feature & 15 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\noindent
+Le feature possono essere suddivise in due gruppi: \\
+\textbf{Feature principali (primary features)}\\ basate sui landmark di testa e spalle, che costituiscono i punti più stabili nell’inquadratura webcam:
+\begin{itemize}
+    \item head\_tilt
+    \item head\_offset\_x
+    \item head\_forward\_distance
+    \item head\_neck\_vertical\_angle
+    \item shoulder\_slope
+    \item shoulder\_width
+    \item head\_shoulder\_alignment
+    \item trunk\_upper\_lateral\_angle
+    \item trunk\_upper\_forward\_backward\_angle
+\end{itemize}
+\textbf{Feature di supporto (support features)} \\
+che includono anche i landmark delle anche per descrivere il tronco completo:
+\begin{itemize}
+    \item neck\_trunk\_angle\_anatomical
+    \item trunk\_lateral\_angle
+    \item trunk\_forward\_backward\_angle
+    \item trunk\_depth
+\end{itemize}
+Nel complesso, il dataset finale rappresenta una versione ridotta e strutturata del dataset originale, in cui le coordinate dei landmark vengono trasformate in un insieme compatto di feature geometriche interpretabili. Questa rappresentazione consente di descrivere efficacemente le configurazioni posturali della parte superiore del corpo mantenendo al tempo stesso una dimensionalità contenuta.
+
+\subsubsection{Confronto tra dataset iniziale e dataset finale}
+Per valutare l’effetto della pipeline di trasformazione dei dati, è stato effettuato un confronto tra il dataset iniziale basato sui landmark e il dataset finale costruito tramite feature geometriche. \\[0.5em]
+Il dataset iniziale contiene 4794 campioni e 100 variabili, corrispondenti principalmente alle coordinate tridimensionali dei landmark corporei estratti tramite il sistema di pose estimation. Dopo la fase di feature engineering, il dataset finale mantiene lo stesso numero di campioni (4794) ma riduce la dimensionalità a 13 feature geometriche, oltre alle variabili subject e upperbody\_label. Come mostrato nel grafico di riduzione della dimensionalità, questo passaggio consente di trasformare una rappresentazione ad alta dimensionalità basata su coordinate grezze in un insieme compatto di variabili geometriche interpretabili.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png}
+\end{figure}
+\noindent
+Il confronto della distribuzione delle classi posturali evidenzia che la pipeline di trasformazione non altera la struttura del dataset. Le cinque classi posturali mantengono esattamente lo stesso numero di campioni nel dataset finale: TLF (1897 campioni), TUP (1615), TLB (442), TLL (420) e TLR (420). Questo risultato conferma che la fase di estrazione delle feature agisce esclusivamente sulla rappresentazione delle variabili senza modificare la composizione del dataset. \\[0.5em]
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png}
+\end{figure}
+\noindent
+Infine, il dataset finale è composto da 13 feature geometriche, suddivise in 9 feature principali e 4 feature di supporto. Le feature principali descrivono principalmente la configurazione di testa e spalle, che rappresentano i riferimenti più stabili nell’inquadratura considerata, mentre le feature di supporto introducono informazioni aggiuntive sull’orientamento del tronco. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../../Grafici/Composition of the Final Feature Set.png}
+\end{figure}
+\noindent
+Nel complesso, il confronto mostra che la pipeline consente una riduzione significativa della dimensionalità (da 100 a 13 variabili) mantenendo invariati sia il numero di campioni sia la distribuzione delle classi. Il dataset finale risulta quindi più compatto, interpretabile e adatto alle successive fasi di analisi delle feature e di modellazione della postura.
+\end{document}
