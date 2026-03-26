@@ -1,8 +1,8 @@
-PWD /Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/Progetto/Appunti/Dataset Analysis
+PWD /Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/SIV_project/Appunti/Dataset Analysis
 INPUT /usr/local/texlive/2025/texmf.cnf
 INPUT /usr/local/texlive/2025/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/Progetto/Appunti/Dataset Analysis/dataset_analysis_completa.tex
+INPUT /Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/SIV_project/Appunti/Dataset Analysis/dataset_analysis_completa.tex
 OUTPUT dataset_analysis_completa.log
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
@@ -263,90 +263,14 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT ../../Grafici/Upper Body Posture Class Distribution.png
-INPUT ../../Grafici/Upper Body Posture Class Distribution.png
-INPUT ../../Grafici/Upper Body Posture Class Distribution.png
-INPUT ../../Grafici/Upper Body Posture Class Distribution.png
-INPUT ../../Grafici/Upper Body Posture Class Distribution.png
-INPUT ../../Grafici/Posture Class Distribution per Subject.png
-INPUT ../../Grafici/Posture Class Distribution per Subject.png
-INPUT ../../Grafici/Posture Class Distribution per Subject.png
-INPUT ../../Grafici/Posture Class Distribution per Subject.png
-INPUT ../../Grafici/Posture Class Distribution per Subject.png
-INPUT ../../Grafici/Geometric consistency of selected landmarks.png
-INPUT ../../Grafici/Geometric consistency of selected landmarks.png
-INPUT ../../Grafici/Geometric consistency of selected landmarks.png
-INPUT ../../Grafici/Geometric consistency of selected landmarks.png
-INPUT ../../Grafici/Geometric consistency of selected landmarks.png
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
-INPUT ../../Grafici/HeadCenter source distribution.png
-INPUT ../../Grafici/HeadCenter source distribution.png
-INPUT ../../Grafici/HeadCenter source distribution.png
-INPUT ../../Grafici/HeadCenter source distribution.png
-INPUT ../../Grafici/HeadCenter source distribution.png
-INPUT ../../Grafici/Feature Histograms.png
-INPUT ../../Grafici/Feature Histograms.png
-INPUT ../../Grafici/Feature Histograms.png
-INPUT ../../Grafici/Feature Histograms.png
-INPUT ../../Grafici/Feature Histograms.png
-INPUT ../../Grafici/Overview of Feature Distributions.png
-INPUT ../../Grafici/Overview of Feature Distributions.png
-INPUT ../../Grafici/Overview of Feature Distributions.png
-INPUT ../../Grafici/Overview of Feature Distributions.png
-INPUT ../../Grafici/Overview of Feature Distributions.png
-INPUT ../../Grafici/Feature Distribution by Posture Class.png
-INPUT ../../Grafici/Feature Distribution by Posture Class.png
-INPUT ../../Grafici/Feature Distribution by Posture Class.png
-INPUT ../../Grafici/Feature Distribution by Posture Class.png
-INPUT ../../Grafici/Feature Distribution by Posture Class.png
-INPUT ../../Grafici/Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Triangular Feature Correlation Matrix.png
-INPUT ../../Grafici/Triangular Feature Correlation Matrix.png
-INPUT ../../Grafici/Triangular Feature Correlation Matrix.png
-INPUT ../../Grafici/Triangular Feature Correlation Matrix.png
-INPUT ../../Grafici/Triangular Feature Correlation Matrix.png
-INPUT ../../Grafici/Standardized Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Standardized Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Standardized Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Standardized Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Standardized Mean Feature Values per Posture Class.png
-INPUT ../../Grafici/Variation of Each Feature Across Posture Classes.png
-INPUT ../../Grafici/Variation of Each Feature Across Posture Classes.png
-INPUT ../../Grafici/Variation of Each Feature Across Posture Classes.png
-INPUT ../../Grafici/Variation of Each Feature Across Posture Classes.png
-INPUT ../../Grafici/Variation of Each Feature Across Posture Classes.png
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
-INPUT ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png
-INPUT ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png
-INPUT ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png
-INPUT ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png
-INPUT ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png
-INPUT ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png
-INPUT ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png
-INPUT ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png
-INPUT ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png
-INPUT ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png
-INPUT ../../Grafici/Composition of the Final Feature Set.png
-INPUT ../../Grafici/Composition of the Final Feature Set.png
-INPUT ../../Grafici/Composition of the Final Feature Set.png
-INPUT ../../Grafici/Composition of the Final Feature Set.png
-INPUT ../../Grafici/Composition of the Final Feature Set.png
 INPUT dataset_analysis_completa.aux
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb

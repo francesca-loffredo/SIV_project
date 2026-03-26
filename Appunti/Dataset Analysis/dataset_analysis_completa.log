@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.10.14)  20 MAR 2026 22:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.10.14)  26 MAR 2026 12:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"/Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/Progetto/Appunti/Dataset Analysis/dataset_analysis_completa.tex"
-(/Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/Progetto/Appunti/Dataset Analysis/dataset_analysis_completa.tex
+**"/Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/SIV_project/Appunti/Dataset Analysis/dataset_analysis_completa.tex"
+(/Users/francescaloffredo/Desktop/Magistrale/1° Anno/1° semestre/Signal, Image and Video/SIV_project/Appunti/Dataset Analysis/dataset_analysis_completa.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
@@ -588,208 +588,26 @@ Package: inputenc 2024/02/08 v1.3d Input encoding file
 [1
 
 {/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<../../Grafici/Upper Body Posture Class Distribution.png, id=49, 510.9489pt x 341.8371pt>
-File: ../../Grafici/Upper Body Posture Class Distribution.png Graphic file (type png)
-<use ../../Grafici/Upper Body Posture Class Distribution.png>
-Package pdftex.def Info: ../../Grafici/Upper Body Posture Class Distribution.png  used on input line 84.
-(pdftex.def)             Requested size: 364.19667pt x 243.66055pt.
 
-
-[2]
-<../../Grafici/Posture Class Distribution per Subject.png, id=56, 617.1858pt x 399.6531pt>
-File: ../../Grafici/Posture Class Distribution per Subject.png Graphic file (type png)
-<use ../../Grafici/Posture Class Distribution per Subject.png>
-Package pdftex.def Info: ../../Grafici/Posture Class Distribution per Subject.png  used on input line 91.
-(pdftex.def)             Requested size: 364.19667pt x 235.84206pt.
-
-
-[3 <../../Grafici/Upper Body Posture Class Distribution.png>]
-
-[4 <../../Grafici/Posture Class Distribution per Subject.png>]
-
-[5]
-<../../Grafici/Geometric consistency of selected landmarks.png, id=68, 508.0581pt x 341.8371pt>
-File: ../../Grafici/Geometric consistency of selected landmarks.png Graphic file (type png)
-<use ../../Grafici/Geometric consistency of selected landmarks.png>
-Package pdftex.def Info: ../../Grafici/Geometric consistency of selected landmarks.png  used on input line 130.
-(pdftex.def)             Requested size: 364.19667pt x 245.05322pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 139--140
-
- []
-
-
-
-[6 <../../Grafici/Geometric consistency of selected landmarks.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 142--143
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 148--149
-
- []
-
-<../../Grafici/HeadCenter source distribution.png, id=76, 448.7967pt x 341.8371pt>
-File: ../../Grafici/HeadCenter source distribution.png Graphic file (type png)
-<use ../../Grafici/HeadCenter source distribution.png>
-Package pdftex.def Info: ../../Grafici/HeadCenter source distribution.png  used on input line 165.
-(pdftex.def)             Requested size: 364.19667pt x 277.40811pt.
-
-
-[7]
-
-[8 <../../Grafici/HeadCenter source distribution.png>]
-
-[9]
-Overfull \hbox (18.68465pt too wide) in paragraph at lines 205--207
-\OT1/cmr/m/n/10.95 Misura l'angolo tra il vet-tore che unisce mid[]shoulder a head[]center e la ver-ti-cale dell'immagine.
- []
-
-
-Overfull \hbox (4.25702pt too wide) in paragraph at lines 212--214
-\OT1/cmr/m/n/10.95 Viene cal-co-lata come dif-ferenza an-go-lare nor-mal-iz-zata tra head[]tilt e shoul-der[]slope. Questa
- []
-
-
-
-[10]
-Overfull \hbox (8.23955pt too wide) in paragraph at lines 233--235
-\OT1/cmr/m/n/10.95 mid[]hip a mid[]shoulder, e il vet-tore testa-collo, definito dal seg-mento che unisce mid[]shoulder
- []
-
-
-
-[11]
-
-[12]
-
-[13]
-
-[14]
-Overfull \hbox (53.18365pt too wide) in paragraph at lines 408--409
-[]\OT1/cmr/m/n/10.95 Le fea-ture del tronco, in par-ti-co-lare \OT1/cmr/bx/n/10.95 trunk[]upper[]lateral[]angle\OT1/cmr/m/n/10.95 , \OT1/cmr/bx/n/10.95 trunk[]forward[]backward[]angle
- []
-
-<../../Grafici/Feature Histograms.png, id=106, 866.5173pt x 569.4876pt>
-File: ../../Grafici/Feature Histograms.png Graphic file (type png)
-<use ../../Grafici/Feature Histograms.png>
-Package pdftex.def Info: ../../Grafici/Feature Histograms.png  used on input line 413.
-(pdftex.def)             Requested size: 455.24411pt x 299.19402pt.
-<../../Grafici/Overview of Feature Distributions.png, id=107, 859.2903pt x 426.393pt>
-File: ../../Grafici/Overview of Feature Distributions.png Graphic file (type png)
-<use ../../Grafici/Overview of Feature Distributions.png>
-Package pdftex.def Info: ../../Grafici/Overview of Feature Distributions.png  used on input line 425.
-(pdftex.def)             Requested size: 455.24411pt x 225.89612pt.
-
-
-[15 <../../Grafici/Feature Histograms.png>]
-<../../Grafici/Feature Distribution by Posture Class.png, id=112, 1293.633pt x 1183.0599pt>
-File: ../../Grafici/Feature Distribution by Posture Class.png Graphic file (type png)
-<use ../../Grafici/Feature Distribution by Posture Class.png>
-Package pdftex.def Info: ../../Grafici/Feature Distribution by Posture Class.png  used on input line 435.
-(pdftex.def)             Requested size: 455.24411pt x 416.33368pt.
-
-
-[16 <../../Grafici/Overview of Feature Distributions.png>]
-<../../Grafici/Mean Feature Values per Posture Class.png, id=117, 904.0977pt x 426.393pt>
-File: ../../Grafici/Mean Feature Values per Posture Class.png Graphic file (type png)
-<use ../../Grafici/Mean Feature Values per Posture Class.png>
-Package pdftex.def Info: ../../Grafici/Mean Feature Values per Posture Class.png  used on input line 444.
-(pdftex.def)             Requested size: 455.24411pt x 214.69891pt.
-
-Overfull \hbox (31.48401pt too wide) in paragraph at lines 437--445
-\OT1/cmr/m/n/10.95 l'inclinazione lat-erale (head[]tilt, head[]offset[]x, trunk[]lateral[]angle) e quelle che de-scrivono l'inclinazione
- []
-
-
-
-[17 <../../Grafici/Feature Distribution by Posture Class.png>]
-<../../Grafici/Triangular Feature Correlation Matrix.png, id=122, 807.9786pt x 734.2632pt>
-File: ../../Grafici/Triangular Feature Correlation Matrix.png Graphic file (type png)
-<use ../../Grafici/Triangular Feature Correlation Matrix.png>
-Package pdftex.def Info: ../../Grafici/Triangular Feature Correlation Matrix.png  used on input line 453.
-(pdftex.def)             Requested size: 455.24411pt x 413.70547pt.
-
-
-[18 <../../Grafici/Mean Feature Values per Posture Class.png>]
-
-[19 <../../Grafici/Triangular Feature Correlation Matrix.png>]
-<../../Grafici/Standardized Mean Feature Values per Posture Class.png, id=132, 900.4842pt x 426.393pt>
-File: ../../Grafici/Standardized Mean Feature Values per Posture Class.png Graphic file (type png)
-<use ../../Grafici/Standardized Mean Feature Values per Posture Class.png>
-Package pdftex.def Info: ../../Grafici/Standardized Mean Feature Values per Posture Class.png  used on input line 466.
-(pdftex.def)             Requested size: 455.24411pt x 215.56424pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 463--467
-
- []
-
-<../../Grafici/Variation of Each Feature Across Posture Classes.png, id=133, 859.2903pt x 426.393pt>
-File: ../../Grafici/Variation of Each Feature Across Posture Classes.png Graphic file (type png)
-<use ../../Grafici/Variation of Each Feature Across Posture Classes.png>
-Package pdftex.def Info: ../../Grafici/Variation of Each Feature Across Posture Classes.png  used on input line 472.
-(pdftex.def)             Requested size: 455.24411pt x 225.89612pt.
-
-
-[20 <../../Grafici/Standardized Mean Feature Values per Posture Class.png>]
-
-[21 <../../Grafici/Variation of Each Feature Across Posture Classes.png>]
-
-[22]
-
-[23]
-<../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png, id=148, 450.2421pt x 354.123pt>
-File: ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png Graphic file (type png)
-<use ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png>
-Package pdftex.def Info: ../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png  used on input line 607.
-(pdftex.def)             Requested size: 364.19667pt x 286.4598pt.
-
-
-[24]
-<../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png, id=152, 570.933pt x 354.123pt>
-File: ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png Graphic file (type png)
-<use ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png>
-Package pdftex.def Info: ../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png  used on input line 613.
-(pdftex.def)             Requested size: 364.19667pt x 225.90306pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 609--614
-
- []
-
-<../../Grafici/Composition of the Final Feature Set.png, id=153, 426.393pt x 354.123pt>
-File: ../../Grafici/Composition of the Final Feature Set.png Graphic file (type png)
-<use ../../Grafici/Composition of the Final Feature Set.png>
-Package pdftex.def Info: ../../Grafici/Composition of the Final Feature Set.png  used on input line 619.
-(pdftex.def)             Requested size: 364.19667pt x 302.4757pt.
-
-
-[25 <../../Grafici/Dimensionality Reduction from Landmark Data to Geometric Features.png> <../../Grafici/Posture Class Distribution-Initial vs Final Dataset.png>]
-
-[26 <../../Grafici/Composition of the Final Feature Set.png>] (./dataset_analysis_completa.aux)
+[2] (./dataset_analysis_completa.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 21673 strings out of 473190
- 480792 string characters out of 5715799
- 899625 words of memory out of 5000000
- 44565 multiletter control sequences out of 15000+600000
- 566247 words of font info for 61 fonts, out of 8000000 for 9000
+ 21451 strings out of 473190
+ 471822 string characters out of 5715799
+ 890623 words of memory out of 5000000
+ 44343 multiletter control sequences out of 15000+600000
+ 565593 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 98i,9n,105p,1217b,898s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on dataset_analysis_completa.pdf (26 pages, 901927 bytes).
+ 98i,5n,105p,590b,266s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on dataset_analysis_completa.pdf (2 pages, 87132 bytes).
 PDF statistics:
- 213 PDF objects out of 1000 (max. 8388607)
- 109 compressed objects within 2 object streams
+ 86 PDF objects out of 1000 (max. 8388607)
+ 43 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 227 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 157 words of extra memory for PDF output out of 10000 (max. 10000000)
 
